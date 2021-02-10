@@ -43,6 +43,12 @@ contract('TrevTokenSale', function(accounts){
       return tokenSaleInstance.tokensSold();
     }).then(function(amount) {
       assert.equal(amount.toNumber(), numberOfTokens, 'increments number of tokens sold');
+      return tokenInstance.balanceOf(buyer);
+    }).then(function(balance) {
+      assert.equal(balance.toNumber(), numberOfTokens);
+      return tokenInstance.balanceOf(tokenSaleInstance.address);
+    }).then(function(balance) {
+      assert.equal(balance.toNumber(), tokensAvailable - numberOfTokens);
       return tokenSaleInstance.buyTokens(numberOfTokens, { from: buyer, value: 1 });
     }).then(assert.fail).catch(function(error) {
       assert(error.message.indexOf('revert') >= 0, 'msg.value must equal amount of wei');
@@ -50,5 +56,25 @@ contract('TrevTokenSale', function(accounts){
     }).then(assert.fail).catch(function(error) {
       assert(error.message.indexOf('revert') >= 0, 'cannot purchase more tokens than wei');
   });
+  });
+
+  it('ends token sale', function() {
+    return TrevToken.deployed().then(function(instance) {
+      tokenInstance = instance;
+      return TrevTokenSale.deployed();
+    }).then(function(instance) {
+        tokenSaleInstance = instance;
+        return tokenSaleInstance.endSale({ from: buyer });
+    }).then(assert.fail).catch(function(error) {
+      assert(error.message.indexOf('revert' >= 0, 'must be admin to end sale'));
+      return tokenSaleInstance.endSale({ from: admin });
+    }).then(function(receipt) {
+      return tokenInstance.balanceOf(admin);
+    }).then(function(balance) {
+      assert.equal(balance.toNumber(), 999990, 'returns all unsold trev tokens to admin');
+      return tokenSaleInstance.tokenPrice();
+    }).then(function(price) {
+      assert.equal(price.toNumber(), 0, 'price was reset');
+    });
   });
 });

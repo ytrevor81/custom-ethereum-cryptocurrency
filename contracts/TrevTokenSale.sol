@@ -26,9 +26,18 @@ contract TrevTokenSale {
   function buyTokens(uint256 _numberOfTokens) public payable {
     require(msg.value == multiply(_numberOfTokens, tokenPrice));
     require(tokenContract.balanceOf(address(this)) >= _numberOfTokens);
+    require(tokenContract.transfer(msg.sender, _numberOfTokens));
 
     tokensSold += _numberOfTokens;
 
     emit Sell(msg.sender, _numberOfTokens);
+  }
+
+  //Transfer amount of tokens in sale back to the admin and destroy contract
+  function endSale() public {
+    require(msg.sender == admin);
+    require(tokenContract.transfer(admin, tokenContract.balanceOf(address(this))));
+
+    selfdestruct(msg.sender);
   }
 }
