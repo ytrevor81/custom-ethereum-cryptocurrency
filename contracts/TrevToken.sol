@@ -61,6 +61,4 @@ contract TrevToken {
 
     return true;
   }
-
-
 }
