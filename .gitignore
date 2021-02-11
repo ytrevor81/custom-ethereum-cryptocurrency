@@ -31,6 +31,9 @@ truffle-reference-NOT-FOR-USE.js
 #Configuration File
 config.json
 
+#Built Contracts and Tests
+build/
+
 # Grunt intermediate storage (https://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
 
