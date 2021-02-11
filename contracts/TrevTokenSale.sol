@@ -3,7 +3,7 @@ pragma solidity >=0.5.16 <0.9.0;
 import "./TrevToken.sol";
 
 contract TrevTokenSale {
-  address admin;
+  address payable admin;
   TrevToken public tokenContract;
   uint256 public tokenPrice;
   uint256 public tokensSold;
@@ -38,6 +38,6 @@ contract TrevTokenSale {
     require(msg.sender == admin);
     require(tokenContract.transfer(admin, tokenContract.balanceOf(address(this))));
 
-    selfdestruct(msg.sender);
+    selfdestruct(admin);
   }
 }
