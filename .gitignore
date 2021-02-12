@@ -25,10 +25,13 @@ coverage
 # nyc test coverage
 .nyc_output
 
+#Package Lock
+package-lock.json
+
 #Truffle Reference Info File
 truffle-reference-NOT-FOR-USE.js
 
-#Configuration File
+#Configuration Files
 config.json
 
 #Built Contracts and Tests
