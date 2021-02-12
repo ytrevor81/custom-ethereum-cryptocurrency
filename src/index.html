@@ -5,15 +5,50 @@
       <meta name="twitter:" content="">
       <meta http-equiv="X-UA-Compatible" content="IE-edge">
       <meta name="viewport" content="width-device-width, initial-scale=1">
-
-      <!-- CSS -->
       <link href="css/bootstrap.min.css" rel="stylesheet">
 
       <title>Trev Token ICO Sale</title>
   </head>
   <body>
-    <h1>Trev Token!</h1>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <h1 class="text-center">Trev Token ICO Sale</h1>
+          <hr/>
+          <br/>
+        </div>
+        <div id="loader">
+          <p class="text-center">Loading...</p>
+        </div>
+        <div id="content" class="text-center">
+          <p>Introducing "Trev Token" (TVT)!
+          Token price is <span class="token-price"></span> Ether.
+          You currently have <span class="tvt-balance"></span>&nbsp; TVT</p>
+          <br/>
+          <form role="form">
+            <div class="form-group">
+              <div class="input-group">
+                <input type="number" id="numberOfTokens" name="number" value="1" min="1" pattern="[0-9]" class="form-control input-lg"></input>
+                <span class="input-group-btn">
+                  <button class="btn btn-primary btn-lg" type="submit">Buy Tokens</button>
+                </span>
+              </div>
+            </div>
+          </form>
+          <br/>
+          <div class="progress">
+            <div id="progress" class="progress-bar progress-bar-striped active" aria-valuemin="0" aria-valuemax="100">
 
+            </div>
+          </div>
+          <p><span class="tokens-sold"></span> / <span class="tokens-available"></span> tokens sold</p>
+          <hr/>
+          <p id="accountAddress"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Javascript -->
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/web3.min.js"></script>
