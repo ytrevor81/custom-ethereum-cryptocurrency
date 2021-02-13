@@ -38,6 +38,8 @@ contract TrevTokenSale {
     require(msg.sender == admin);
     require(tokenContract.transfer(admin, tokenContract.balanceOf(address(this))));
 
+
+    //admin.transfer(address(this).balance);
     selfdestruct(admin);
   }
 }
