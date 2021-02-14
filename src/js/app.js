@@ -37,8 +37,22 @@ App = {
         App.contracts.TrevToken.deployed().then(function(trevToken) {
           console.log("Trev Token Address: ", trevToken.address);
         });
+        App.listenForEvents();
         return App.render();
       });
+    })
+  },
+
+  // Listen to events emitted from contracts
+  listenForEvents: function() {
+    App.contracts.TrevTokenSale.deployed().then(function(instance) {
+      instance.Sell({}, {
+        fromBlock: 0,
+        toBlock: 'latest',
+      }).watch(function(error, event) {
+        console.log("event triggered", event);
+        App.render();
+      })
     })
   },
 
@@ -105,8 +119,7 @@ App = {
     }).then(function(result) {
       console.log("Tokens bought...");
       $('form').trigger('reset');
-      $('#loader').hide();
-      $('#content').show();
+      //Wait for Sell event
     });
   }
 }
