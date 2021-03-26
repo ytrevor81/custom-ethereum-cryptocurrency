@@ -4,7 +4,7 @@ An ICO website, buying and selling a custom ERC-20 token named TrevToken on Rink
 ## Technologies
 Solidity (Smart Contracts)  |  ERC-20  |  Javascript  |  Web3.js  |  Truffle  |  Ganache  |  Infura API
 
-##Smart Contract Details
+## Smart Contract Details
 
 <i>TrevToken.sol</i> is the ERC-20 token that is bought and sold on the ICO website.
 
