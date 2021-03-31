@@ -1,4 +1,4 @@
-pragma solidity >=0.5.16 <0.9.0;
+pragma solidity >=0.6.0 <0.8.0;
 
 import "./TrevToken.sol";
 
@@ -39,7 +39,7 @@ contract TrevTokenSale {
     require(tokenContract.transfer(admin, tokenContract.balanceOf(address(this))));
 
 
-    //admin.transfer(address(this).balance);
-    selfdestruct(admin);
+    admin.transfer(address(this).balance);
+    //selfdestruct(admin);
   }
 }

@@ -110,16 +110,4 @@ it('approves token for delegated transfer', function(){
       assert.equal(allowance, 0, 'deducts amount from the allowance');
     });
   });
-
-
-
-
-
-
-
-
-
-
-
-
 });

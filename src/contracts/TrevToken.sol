@@ -1,4 +1,4 @@
-pragma solidity >=0.5.16 <0.9.0;
+pragma solidity >=0.6.0 <0.8.0;
 
 contract TrevToken {
   string public name = "Trev Token"; //Token name
