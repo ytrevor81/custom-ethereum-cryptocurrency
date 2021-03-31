@@ -1,11 +1,8 @@
-import { Tabs, Tab } from 'react-bootstrap'
-import dBank from '../abis/dBank.json'
+import TrevToken from '../abis/TrevToken.json'
+import TrevTokenSale from '../abis/TrevTokenSale.json'
 import React, { Component } from 'react';
-import Token from '../abis/Token.json'
 import Web3 from 'web3';
 import './App.css';
-
-//h0m3w0rk - add new tab to check accrued interest
 
 class App extends Component {
 
@@ -29,15 +26,25 @@ class App extends Component {
 
       //load contracts
       try {
-        const token = new web3.eth.Contract(Token.abi, Token.networks[netId].address);
-        const dbank = new web3.eth.Contract(dBank.abi, dBank.networks[netId].address);
-        const dBankAddress = dBank.networks[netId].address;
-        this.setState({ token: token, dbank: dbank, dBankAddress: dBankAddress });
+        const token = new web3.eth.Contract(TrevToken.abi, TrevToken.networks[netId].address);
+        const tokenSale = new web3.eth.Contract(TrevTokenSale.abi, TrevTokenSale.networks[netId].address);
+        const tokenAddress = TrevToken.networks[netId].address;
+        const tokenSaleAddress = TrevTokenSale.networks[netId].address;
+        const tokenWeiPrice = await tokenSale.methods.tokenPrice().call();
+        const tokenEthPrice = await web3.utils.fromWei(tokenWeiPrice, "ether");
+        console.log(tokenWeiPrice, tokenEthPrice);
+
+        console.log(tokenAddress, tokenSaleAddress);
+        this.setState({ token: token,
+                        tokenSale: tokenSale,
+                        tokenAddress: tokenAddress,
+                        tokenSaleAddress: tokenSaleAddress,
+                        tokenWeiPrice: tokenWeiPrice,
+                        tokenEthPrice: tokenEthPrice});
       } catch (e) {
         console.log('Error', e);
         window.alert('Contracts not deployed to the current network.');
       }
-
     }
     else {
       window.alert('This is a blockchain website. Please install the MetaMask browser extension to continue.')
@@ -45,23 +52,12 @@ class App extends Component {
 
   }
 
-  async deposit(amount) {
-    if(this.state.dbank!=='undefined'){
+  async buyTokens(numberOfTokens) {
+    if(this.state.tokenSale!=='undefined'){
       try {
-        await this.state.dbank.methods.deposit().send({ value: amount.toString(), from: this.state.account })
+        await this.state.tokenSale.methods.buyTokens(numberOfTokens).send({ from: this.state.account, value: numberOfTokens * this.state.tokenPrice, gas: 500000})
       } catch (e) {
-        console.log('Error, deposit: ', e);
-      }
-    }
-  }
-
-  async withdraw(e) {
-    e.preventDefault();
-    if(this.state.dbank!=='undefined'){
-      try {
-        await this.state.dbank.methods.withdraw().send({ from: this.state.account })
-      } catch (e) {
-        console.log('Error, withdraw: ', e);
+        console.log('Error, buying tokens: ', e);
       }
     }
   }
@@ -72,70 +68,67 @@ class App extends Component {
       web3: 'undefined',
       account: '',
       token: null,
-      dbank: null,
+      tokenSale: null,
+      tokenAddress: null,
+      tokenSaleAddress: null,
       balance: 0,
-      dBankAddress: null
+      tokenWeiPrice: 1000000000000000,
+      tokenEthPrice: 0,
+      tokensSold: 0,
+      tokensAvailable: 750000
     }
   }
 
   render() {
     return (
       <div className='text-monospace'>
-        <div className="container-fluid mt-5 text-center">
-        <br></br>
-          <h1>Welcome to Trev's DeFi Bank</h1>
-          <h3>Account: {this.state.account}</h3>
-          <br></br>
-          <h6>
-            This application is on the Rinkeby test network. To use this application: click "Deposit" and enter the amount of ETH you'd like to deposit into this bank. Then click "Withdraw" to withdraw your ETH from this bank + interest given to you in Trev Bank Currency (TBC). Make sure to have a Rinkeby account connected to MetaMask in order to use this application.
+        <div className="container">
+          <br/>
+          <h1 class="text-center">Trev Token ICO Sale</h1>
+          <br/>
+          <h6 class="text-center">
+            This application is on the Rinkeby test network.
           </h6>
-          <br></br>
-          <div className="row">
-            <main role="main" className="col-lg-12 d-flex text-center">
-              <div className="content mr-auto ml-auto">
-              <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example">
-                <Tab eventKey="deposit" title="Deposit">
-                  <div>
-                    <br/>
-                    How much do you want to deposit?
-                    <br/>
-                    (min. amount is 0.01 ETH)
-                    <br/>
-                    (1 despoit is possible at a time)
-                    <br/>
-                    <form onSubmit={(e) => {
-                      e.preventDefault();
-                      let amount = this.depositAmount.value;
-                      amount = amount * 10**18; //convert to Wei
-                      this.deposit(amount);
-                    }}>
-                      <div className='form-group mr-sm-2'>
-                        <br/>
-                          <input id="depositAmount"
-                                 step="0.01"
-                                 className="form-control form-control-md"
-                                 placeholder="amount..."
-                                 type="number"
-                                 ref={(input) => { this.depositAmount = input }}/>
-                      </div>
-                      <button type="submit" className="btn btn-primary">DEPOSIT</button>
-                    </form>
-                  </div>
-                </Tab>
-                <Tab eventKey="withdraw" title="Withdraw">
-                  <div>
-                    <br/>
-                    Do you want to withdraw + take interest?
-                    <br/>
-                    <br/>
-                    <div>
-                      <button type="submit" className="btn btn-primary" onClick={(e) => this.withdraw(e)}>WITHDRAW</button>
-                    </div>
-                  </div>
-                </Tab>
-              </Tabs>
+          <hr/><br/>
+          <div id="content" class="main-content row">
+            <p class="intro-paragraph">Introducing "Trev Token" (TVT)!
+            Token price is {this.state.tokenEthPrice} Ether.
+            You currently have {this.state.balance} TVT</p>
+            <br/><br/>
+            <form class="col-lg-12 col-md-12"
+                  onSubmit={(e) => {
+              e.preventDefault();
+              let numberOfTokens = this.numberOfTokens.value;
+              this.buyTokens(numberOfTokens);
+            }}>
+              <div class="form-group">
+                <div class="input-group">
+                  <input type="number"
+                  id="numberOfTokens"
+                  name="number"
+                  value="1"
+                  min="1"
+                  pattern="[0-9]"
+                  class="form-control input-lg"
+                  ref={(input) => { this.numberOfTokens = input }}></input>
+                  <span class="input-group-btn left-spacing">
+                    <button class="btn btn-primary btn-lg" type="submit">Buy Tokens</button>
+                  </span>
+                </div>
               </div>
-            </main>
+            </form>
+            <br/>
+            <div class="progress">
+              <div id="progress" class="progress-bar progress-bar-striped active" aria-valuemin="0" aria-valuemax="100">
+
+              </div>
+            </div>
+            <hr/>
+            <div class="col-lg-12 col-md-12">
+              <p class="text-center">{this.state.tokensSold} / {this.state.tokensAvailable} TVT tokens sold</p>
+              <br/>
+              <h6 class="text-center">Account: {this.state.account}</h6>
+            </div>
           </div>
         </div>
       </div>
