@@ -1,7 +1,8 @@
-import TrevToken from '../abis/TrevToken.json'
-import TrevTokenSale from '../abis/TrevTokenSale.json'
+import TrevToken from '../abis/TrevToken.json';
+import TrevTokenSale from '../abis/TrevTokenSale.json';
 import React, { Component } from 'react';
 import Web3 from 'web3';
+import ProgressBar from './Progress';
 import './App.css';
 
 class App extends Component {
@@ -18,7 +19,7 @@ class App extends Component {
 
       if(typeof accounts[0]!=='undefined'){
         const balance = await web3.eth.getBalance(accounts[0]);
-        this.setState({ account: accounts[0], balance: balance, web3: web3 })
+        this.setState({ account: accounts[0], web3: web3 })
       }
       else {
         window.alert('Please login to MetaMask.')
@@ -32,7 +33,10 @@ class App extends Component {
         const tokenSaleAddress = TrevTokenSale.networks[netId].address;
         const tokenWeiPrice = await tokenSale.methods.tokenPrice().call();
         const tokenEthPrice = await web3.utils.fromWei(tokenWeiPrice, "ether");
-        console.log(tokenWeiPrice, tokenEthPrice);
+        const balance = await token.methods.balanceOf(this.state.account).call();
+        const tokensSold = tokenSale.methods.tokensSold().call();
+
+        console.log(tokensSold);
 
         console.log(tokenAddress, tokenSaleAddress);
         this.setState({ token: token,
@@ -40,7 +44,9 @@ class App extends Component {
                         tokenAddress: tokenAddress,
                         tokenSaleAddress: tokenSaleAddress,
                         tokenWeiPrice: tokenWeiPrice,
-                        tokenEthPrice: tokenEthPrice});
+                        tokenEthPrice: tokenEthPrice,
+                        balance: balance,
+                        tokensSold: tokensSold });
       } catch (e) {
         console.log('Error', e);
         window.alert('Contracts not deployed to the current network.');
@@ -91,7 +97,7 @@ class App extends Component {
           </h6>
           <hr/><br/>
           <div id="content" class="main-content row">
-            <p class="intro-paragraph">Introducing "Trev Token" (TVT)!
+            <p class="text-center">Introducing "Trev Token" (TVT)!
             Token price is {this.state.tokenEthPrice} Ether.
             You currently have {this.state.balance} TVT</p>
             <br/><br/>
@@ -105,11 +111,9 @@ class App extends Component {
                 <div class="input-group">
                   <input type="number"
                   id="numberOfTokens"
-                  name="number"
                   value="1"
-                  min="1"
-                  pattern="[0-9]"
-                  class="form-control input-lg"
+                  step="1"
+                  class="form-control form-control-lg"
                   ref={(input) => { this.numberOfTokens = input }}></input>
                   <span class="input-group-btn left-spacing">
                     <button class="btn btn-primary btn-lg" type="submit">Buy Tokens</button>
@@ -119,9 +123,7 @@ class App extends Component {
             </form>
             <br/>
             <div class="progress">
-              <div id="progress" class="progress-bar progress-bar-striped active" aria-valuemin="0" aria-valuemax="100">
-
-              </div>
+              <ProgressBar value={10} max={100}/>
             </div>
             <hr/>
             <div class="col-lg-12 col-md-12">
