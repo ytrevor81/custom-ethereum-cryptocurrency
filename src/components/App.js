@@ -63,8 +63,13 @@ class App extends Component {
   async buyTokens(numberOfTokens) {
     if(this.state.tokenSale!=='undefined'){
       try {
-        await this.state.tokenSale.methods.buyTokens(numberOfTokens).send({ from: this.state.account, value: numberOfTokens * this.state.tokenPrice });
+        console.log(numberOfTokens)
+        await this.state.tokenSale.methods.buyTokens(numberOfTokens).send({ from: this.state.account, value: numberOfTokens * this.state.tokenWeiPrice, gas: 500000 });
+        await window.location.reload(false);
       } catch (e) {
+        {
+          window.alert('An error has occured: make sure you have enough Rinkeby funds, refresh the page, and enter a valid number');
+        }
         console.log('Error, buying tokens: ', e);
       }
     }
@@ -107,11 +112,10 @@ class App extends Component {
               <br/>
             </div>
             <form className="col-lg-12 col-md-12"
+                  role="form"
                   onSubmit={(e) => {
               e.preventDefault();
               let numberOfTokens = this.numberOfTokens.value;
-              numberOfTokens = Number(numberOfTokens);
-              console.log(numberOfTokens)
               this.buyTokens(numberOfTokens);
             }}>
                 <div className="form-grid">
