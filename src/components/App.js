@@ -34,11 +34,11 @@ class App extends Component {
         const tokenWeiPrice = await tokenSale.methods.tokenPrice().call();
         const tokenEthPrice = await web3.utils.fromWei(tokenWeiPrice, "ether");
         const balance = await token.methods.balanceOf(this.state.account).call();
-        const tokensSold = tokenSale.methods.tokensSold().call();
+        const tokensSold = await tokenSale.methods.tokensSold().call();
 
-        console.log(tokensSold);
+        const progressPercent = tokensSold / 750000 * 100;
 
-        console.log(tokenAddress, tokenSaleAddress);
+        console.log(progressPercent);
         this.setState({ token: token,
                         tokenSale: tokenSale,
                         tokenAddress: tokenAddress,
@@ -46,7 +46,9 @@ class App extends Component {
                         tokenWeiPrice: tokenWeiPrice,
                         tokenEthPrice: tokenEthPrice,
                         balance: balance,
-                        tokensSold: tokensSold });
+                        tokensSold: tokensSold,
+                        progressPercent: progressPercent
+                        });
       } catch (e) {
         console.log('Error', e);
         window.alert('Contracts not deployed to the current network.');
@@ -61,7 +63,7 @@ class App extends Component {
   async buyTokens(numberOfTokens) {
     if(this.state.tokenSale!=='undefined'){
       try {
-        await this.state.tokenSale.methods.buyTokens(numberOfTokens).send({ from: this.state.account, value: numberOfTokens * this.state.tokenPrice, gas: 500000})
+        await this.state.tokenSale.methods.buyTokens(numberOfTokens).send({ from: this.state.account, value: numberOfTokens * this.state.tokenPrice });
       } catch (e) {
         console.log('Error, buying tokens: ', e);
       }
@@ -81,7 +83,8 @@ class App extends Component {
       tokenWeiPrice: 1000000000000000,
       tokenEthPrice: 0,
       tokensSold: 0,
-      tokensAvailable: 750000
+      tokensAvailable: 750000,
+      progressPercent: 0,
     }
   }
 
@@ -90,46 +93,48 @@ class App extends Component {
       <div className='text-monospace'>
         <div className="container">
           <br/>
-          <h1 class="text-center">Trev Token ICO Sale</h1>
+          <h1 className="text-center">Trev Token ICO Sale</h1>
           <br/>
-          <h6 class="text-center">
-            This application is on the Rinkeby test network.
+          <h6 className="text-center">
+            This application is on the Rinkeby test network. Please use an account connected to Rinkeby in order to use this application.
           </h6>
           <hr/><br/>
-          <div id="content" class="main-content row">
-            <p class="text-center">Introducing "Trev Token" (TVT)!
-            Token price is {this.state.tokenEthPrice} Ether.
-            You currently have {this.state.balance} TVT</p>
-            <br/><br/>
-            <form class="col-lg-12 col-md-12"
+          <div id="content" className="row">
+            <div className="col-lg-12 col-md-12">
+              <p className="text-center">Introducing "Trev Token" (TVT)!
+              Token price is {this.state.tokenEthPrice} Ether.
+              You currently have {this.state.balance} TVT</p>
+              <br/>
+            </div>
+            <form className="col-lg-12 col-md-12"
                   onSubmit={(e) => {
               e.preventDefault();
               let numberOfTokens = this.numberOfTokens.value;
+              numberOfTokens = Number(numberOfTokens);
+              console.log(numberOfTokens)
               this.buyTokens(numberOfTokens);
             }}>
-              <div class="form-group">
-                <div class="input-group">
-                  <input type="number"
+                <div className="form-grid">
+                  <div/>
+                  <input
+                  type="number"
                   id="numberOfTokens"
-                  value="1"
-                  step="1"
-                  class="form-control form-control-lg"
+                  min="1"
+                  pattern="[0-9]"
+                  placeholder="amount..."
                   ref={(input) => { this.numberOfTokens = input }}></input>
-                  <span class="input-group-btn left-spacing">
-                    <button class="btn btn-primary btn-lg" type="submit">Buy Tokens</button>
+                  <span className="input-group-btn left-spacing">
+                    <button className="btn btn-primary btn-lg" type="submit">Buy Tokens</button>
                   </span>
                 </div>
-              </div>
             </form>
-            <br/>
-            <div class="progress">
-              <ProgressBar value={10} max={100}/>
+            <div className="spaced col-lg-12 col-md-12 text-center">
+              <ProgressBar value={this.state.progressPercent} max={100} width={'50%'} height={'25px'}/>
             </div>
-            <hr/>
-            <div class="col-lg-12 col-md-12">
-              <p class="text-center">{this.state.tokensSold} / {this.state.tokensAvailable} TVT tokens sold</p>
-              <br/>
-              <h6 class="text-center">Account: {this.state.account}</h6>
+            <div className="col-lg-12 col-md-12">
+              <p className="text-center">{this.state.tokensSold} / {this.state.tokensAvailable} TVT tokens sold</p>
+              <hr/><br/>
+              <h6 className="text-center">Account: {this.state.account}</h6>
             </div>
           </div>
         </div>
