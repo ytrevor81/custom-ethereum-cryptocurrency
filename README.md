@@ -1,14 +1,14 @@
 # custom-ethereum-cryptocurrency
-An ICO website, buying and selling a custom ERC-20 token named TrevToken on Rinkeby.
+The TrevToken ICO Sale website is a React application, buying and selling a custom ERC-20 token named TrevToken (TVT) on Rinkeby.
 
-### Smart Contract Details
+### Smart Contracts:
 
 <i>TrevToken.sol</i> is the ERC-20 token that is bought and sold on the ICO website.
 
 <i>TrevTokenSale.sol</i> handles the main transactions of TrevToken.
 
 ## Technologies
-Solidity (Smart Contracts)  |  ERC-20  |  Javascript  |  Web3.js  |  Truffle  |  Ganache  |  Infura API
+React JS | Solidity (Smart Contracts)  |  ERC-20  |  Javascript  |  Web3.js  |  Truffle  |  Ganache  |  Infura API
 
 ![ico1](https://user-images.githubusercontent.com/46886041/113481275-cedba700-94c2-11eb-94bc-935a41bbce5e.JPG)
 
