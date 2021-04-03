@@ -95,13 +95,17 @@ class App extends Component {
 
   render() {
     return (
-      <div className='text-monospace'>
-        <div className="container">
+      <div className='body text-monospace'>
+        <div className="main container">
           <br/>
           <h1 className="text-center">Trev Token ICO Sale</h1>
           <br/>
           <h6 className="text-center">
             This application is on the Rinkeby test network. Please use an account connected to Rinkeby in order to use this application.
+          </h6>
+          <br/>
+          <h6 className="text-center">
+            When you purchase TVT, your transaction will take a few seconds to be processed on the blockchain. 
           </h6>
           <hr/><br/>
           <div id="content" className="row">
