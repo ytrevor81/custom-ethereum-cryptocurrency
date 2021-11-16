@@ -1,5 +1,5 @@
 # custom-ethereum-cryptocurrency
-The TrevToken ICO Sale website is a React application, buying and selling a custom ERC-20 token named TrevToken (TVT) on Rinkeby. Visit the website here: https://ytrevor82.github.io/trevtoken-live/
+The TrevToken ICO Sale website is a React application, buying and selling a custom ERC-20 token named TrevToken (TVT) on Rinkeby.
 
 ### Smart Contracts:
 
